@@ -1,0 +1,522 @@
+{
+  "info": {
+    "_postman_id": "19ae208c-e350-47e9-a5e0-11319a7f9bf5",
+    "name": "Laravel News API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "35351298"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Reviewer User\",\r\n    \"email\": \"reviewer@example.com\",\r\n    \"password\": \"password123\",\r\n    \"password_confirmation\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"qgusikowski@example.net\",\r\n    \"password\": \"password\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "1|0lIHPakB1XqHrlPMuS9im795cPnV56uIfvYFVUa5cf3ccbe2",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/logout",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "View Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "2|FlyOaPDt1O7Xk1KugmYfz31R45Dzjh0PQB1BzpHibc78f585",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "2|FlyOaPDt1O7Xk1KugmYfz31R45Dzjh0PQB1BzpHibc78f585",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"User Оновлений\",\r\n    \"email\": \"test@example.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "profile"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Public news",
+      "item": [
+        {
+          "name": "All public news",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/news",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "news"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search and filter news",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/news?search=Alice&author_id=2",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "news"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Alice"
+                },
+                {
+                  "key": "author_id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Viewing single news item",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8000/api/news/1",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "news",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Private news",
+      "item": [
+        {
+          "name": "List of my news",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "4|CekuSov0wdsMYrbVAEbdLomUfvrUUURTVD5Le0Nv2e5940ce",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/my-news",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "my-news"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Creating news",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "4|CekuSov0wdsMYrbVAEbdLomUfvrUUURTVD5Le0Nv2e5940ce",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Нова тестова новина",
+                  "type": "text",
+                  "uuid": "90b4d752-edd5-4844-90a8-239b4a70ca52"
+                },
+                {
+                  "key": "short_description",
+                  "value": "Опис",
+                  "type": "text",
+                  "uuid": "7081e725-76f5-4151-ac2d-cfee054e29c4"
+                },
+                {
+                  "key": "is_published",
+                  "value": "1",
+                  "type": "text",
+                  "uuid": "39f5dadc-e990-4032-89ae-5e51a6ae5764"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "uuid": "d4a529fd-a274-4098-8df4-6724dd52f0e3",
+                  "src": "/C:/Users/Діма/Desktop/завантаження (1).jfif"
+                },
+                {
+                  "key": "blocks[0][type]",
+                  "value": "text",
+                  "type": "text",
+                  "uuid": "c2e6a5aa-8ce0-42a7-9158-ac4083c6013e"
+                },
+                {
+                  "key": "blocks[0][text_content]",
+                  "value": "Перший блок. Текст",
+                  "type": "text",
+                  "uuid": "aa4f43c7-81dc-4b3a-aed9-adca1c97f904"
+                },
+                {
+                  "key": "blocks[1][type]",
+                  "value": "text_image_right",
+                  "type": "text",
+                  "uuid": "ddff33d5-955f-4e0a-b8c2-d9a265f185b3"
+                },
+                {
+                  "key": "blocks[1][text_content]",
+                  "value": "Другий блок. Текст",
+                  "type": "text",
+                  "uuid": "3b034a9f-c35c-4136-9ac3-36064be3215a"
+                },
+                {
+                  "key": "blocks[1][image]",
+                  "type": "file",
+                  "uuid": "25d4705b-0dac-41d4-9bdd-e775469bb43f",
+                  "src": "/C:/Users/Діма/Desktop/завантаження (2).jfif"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/my-news",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "my-news"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "News update (with files)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "4|CekuSov0wdsMYrbVAEbdLomUfvrUUURTVD5Le0Nv2e5940ce",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/ecmascript",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "_method",
+                  "value": "PUT",
+                  "type": "text",
+                  "uuid": "1aae73de-50fa-41a9-9820-eda32c708519"
+                },
+                {
+                  "key": "title",
+                  "value": "Оновлена назва новини",
+                  "type": "text",
+                  "uuid": "54c87d2b-98da-451f-9cda-c86ebe1885bb"
+                },
+                {
+                  "key": "blocks[0][type]",
+                  "value": "text",
+                  "type": "text",
+                  "uuid": "80f03fc3-3947-4fa6-adbb-3437f4dfaa90"
+                },
+                {
+                  "key": "blocks[0][text_content]",
+                  "value": "Успішно оновлений текст без зміни картинки",
+                  "type": "text",
+                  "uuid": "662c6c1b-b563-4635-99d2-0eb62f2256c9"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/my-news/57",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "my-news",
+                "57"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deleting news",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "4|CekuSov0wdsMYrbVAEbdLomUfvrUUURTVD5Le0Nv2e5940ce",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8000/api/my-news/57",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "my-news",
+                "57"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
