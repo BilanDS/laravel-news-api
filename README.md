@@ -37,8 +37,8 @@ RESTful API для керування новинами зі складною д�
 
 1. Клонування репозиторію:
    ```bash
-   git clone [https://github.com/BilanDS/laravel-news-api.git](https://github.com/your-username/news-api.git)
-   cd news-api
+   git clone https://github.com/BilanDS/laravel-news-api.git
+   cd laravel-news-api
    
 2. Встановлення залежностей:
     ```bash
