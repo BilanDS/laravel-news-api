@@ -28,7 +28,7 @@ class NewsController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $news = $request->user()->news()
-            ->with(['author', 'blocks' => fn ($q) => $q->orderBy('order')])
+            ->with(['author', 'blocks' => fn($q) => $q->orderBy('order')])
             ->latest()
             ->paginate(10);
 
@@ -99,7 +99,7 @@ class NewsController extends Controller
             return $news;
         });
 
-        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
+        $news->load(['author', 'blocks' => fn($q) => $q->orderBy('order')]);
 
         return new NewsResource($news);
     }
@@ -115,7 +115,7 @@ class NewsController extends Controller
     public function show(News $news): NewsResource
     {
         Gate::authorize('view', $news);
-        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
+        $news->load(['author', 'blocks' => fn($q) => $q->orderBy('order')]);
 
         return new NewsResource($news);
     }
@@ -123,7 +123,7 @@ class NewsController extends Controller
     #[OA\Post(
         path: '/api/dashboard/news/{id}',
         summary: 'Оновити існуючу новину',
-        description: 'Для оновлення з файлами використовуйте POST та поле _method=PUT.',
+        description: 'Для оновлення з файлами використовуйте POST та поле _method=PUT. Можна передати deleted_blocks[] для видалення конкретних блоків.',
         security: [['bearerAuth' => []]],
         tags: ['Dashboard News']
     )]
@@ -136,6 +136,8 @@ class NewsController extends Controller
                 properties: [
                     new OA\Property(property: '_method', type: 'string', example: 'PUT'),
                     new OA\Property(property: 'title', type: 'string'),
+                    new OA\Property(property: 'deleted_blocks[0]', type: 'integer', description: 'ID блоку для видалення'),
+                    new OA\Property(property: 'blocks[0][id]', type: 'integer', description: 'ID існуючого блоку (для оновлення)'),
                     new OA\Property(property: 'blocks[0][type]', type: 'string', example: 'text'),
                     new OA\Property(property: 'blocks[0][text_content]', type: 'string'),
                 ]
@@ -149,6 +151,7 @@ class NewsController extends Controller
         $validated = $request->validated();
 
         DB::transaction(function () use ($validated, $request, $news) {
+
             if ($request->hasFile('image')) {
                 if ($news->image) {
                     Storage::disk('public')->delete($news->image);
@@ -162,31 +165,58 @@ class NewsController extends Controller
                 'is_published' => $validated['is_published'] ?? $news->is_published,
             ]);
 
-            if ($request->has('blocks')) {
-                foreach ($news->blocks as $block) {
+            if (!empty($validated['deleted_blocks'])) {
+                $blocksToDelete = $news->blocks()->whereIn('id', $validated['deleted_blocks'])->get();
+
+                foreach ($blocksToDelete as $block) {
                     if ($block->image_path) {
                         Storage::disk('public')->delete($block->image_path);
                     }
+                    $block->delete();
                 }
-                $news->blocks()->delete();
+            }
 
+            if (isset($validated['blocks'])) {
                 foreach ($validated['blocks'] as $index => $blockData) {
-                    $blockImagePath = null;
-                    if (isset($blockData['image']) && $request->hasFile("blocks.{$index}.image")) {
-                        $blockImagePath = $request->file("blocks.{$index}.image")->store('news_blocks', 'public');
-                    }
+                    $blockId = $blockData['id'] ?? null;
 
-                    $news->blocks()->create([
-                        'type' => $blockData['type'],
-                        'text_content' => $blockData['text_content'] ?? null,
-                        'image_path' => $blockImagePath,
-                        'order' => $index,
-                    ]);
+                    if ($blockId) {
+                        $block = $news->blocks()->find($blockId);
+
+                        if ($block) {
+                            $updateData = [
+                                'type' => $blockData['type'],
+                                'text_content' => $blockData['text_content'] ?? null,
+                                'order' => $index,
+                            ];
+
+                            if ($request->hasFile("blocks.{$index}.image")) {
+                                if ($block->image_path) {
+                                    Storage::disk('public')->delete($block->image_path);
+                                }
+                                $updateData['image_path'] = $request->file("blocks.{$index}.image")->store('news_blocks', 'public');
+                            }
+
+                            $block->update($updateData);
+                        }
+                    } else {
+                        $blockImagePath = null;
+                        if (isset($blockData['image']) && $request->hasFile("blocks.{$index}.image")) {
+                            $blockImagePath = $request->file("blocks.{$index}.image")->store('news_blocks', 'public');
+                        }
+
+                        $news->blocks()->create([
+                            'type' => $blockData['type'],
+                            'text_content' => $blockData['text_content'] ?? null,
+                            'image_path' => $blockImagePath,
+                            'order' => $index,
+                        ]);
+                    }
                 }
             }
         });
 
-        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
+        $news->load(['author', 'blocks' => fn($q) => $q->orderBy('order')]);
 
         return new NewsResource($news);
     }

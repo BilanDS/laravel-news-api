@@ -264,7 +264,7 @@
                     "Dashboard News"
                 ],
                 "summary": "Оновити існуючу новину",
-                "description": "Для оновлення з файлами використовуйте POST та поле _method=PUT.",
+                "description": "Для оновлення з файлами використовуйте POST та поле _method=PUT. Можна передати deleted_blocks[] для видалення конкретних блоків.",
                 "operationId": "a80920aec4ffcb075ed19da743f40df3",
                 "parameters": [
                     {
@@ -288,6 +288,14 @@
                                     },
                                     "title": {
                                         "type": "string"
+                                    },
+                                    "deleted_blocks[0]": {
+                                        "description": "ID блоку для видалення",
+                                        "type": "integer"
+                                    },
+                                    "blocks[0][id]": {
+                                        "description": "ID існуючого блоку (для оновлення)",
+                                        "type": "integer"
                                     },
                                     "blocks[0][type]": {
                                         "type": "string",
