@@ -21,15 +21,14 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
-        $randomUsers = User::factory(10)->create();
+        $randomUsers = User::factory(2)->create();
 
         $allUsers = $randomUsers->push($testUser);
 
         $allUsers->each(function (User $user) {
+            News::factory(rand(2, 4))->create(['user_id' => $user->id])->each(function (News $news) {
 
-            News::factory(rand(3, 7))->create(['user_id' => $user->id])->each(function (News $news) {
-
-                $blocksCount = rand(2, 4);
+                $blocksCount = rand(2, 3);
                 for ($i = 1; $i <= $blocksCount; $i++) {
                     NewsContentBlock::factory()->create([
                         'news_id' => $news->id,

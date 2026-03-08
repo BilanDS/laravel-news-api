@@ -24,7 +24,7 @@ class NewsContentBlockFactory extends Factory
                 : null,
 
             'image_path' => in_array($type, [BlockType::Image, BlockType::TextImageRight, BlockType::TextImageLeft])
-                ? 'https://picsum.photos/seed/'.fake()->uuid().'/640/480'
+                ? 'blocks/'.fake()->uuid().'.jpg'
                 : null,
 
             'order' => 0,
