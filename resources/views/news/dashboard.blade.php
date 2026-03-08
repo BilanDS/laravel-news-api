@@ -46,7 +46,7 @@
                                 </td>
                                 <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ route('news.show', $item->id) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ url('/news/' . $item->id) }}" class="btn btn-sm btn-outline-primary">
                                         Переглянути
                                     </a>
                                 </td>
