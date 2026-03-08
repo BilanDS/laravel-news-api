@@ -18,14 +18,12 @@ class NewsResource extends JsonResource
             'is_published' => $this->is_published,
             'published_at' => $this->created_at->format('Y-m-d H:i:s'),
 
-            'author' => $this->whenLoaded('author', function () {
-                return [
-                    'id' => $this->author->id,
-                    'name' => $this->author->name,
-                ];
-            }),
+            'author' => $this->author ? [
+                'id' => $this->author->id,
+                'name' => $this->author->name,
+            ] : null,
 
-            'blocks' => NewsBlockResource::collection($this->whenLoaded('blocks')),
+            'blocks' => NewsBlockResource::collection($this->blocks),
         ];
     }
 }
