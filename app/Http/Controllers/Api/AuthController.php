@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use OpenApi\Attributes as OA;
-
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\UserResource;
 
 class AuthController extends Controller
 {
@@ -49,7 +48,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => __('api.register_success'),
             'user' => new UserResource($user),
-            'token' => $token
+            'token' => $token,
         ], 201);
     }
 
@@ -73,7 +72,7 @@ class AuthController extends Controller
         description: 'Успішний вхід',
         content: new OA\JsonContent(
             properties: [
-                new OA\Property(property: 'token', type: 'string', example: '1|abc123token...')
+                new OA\Property(property: 'token', type: 'string', example: '1|abc123token...'),
             ]
         )
     )]
@@ -97,7 +96,7 @@ class AuthController extends Controller
         return response()->json([
             'message' => __('api.login_success'),
             'user' => new UserResource($user),
-            'token' => $token
+            'token' => $token,
         ]);
     }
 
@@ -113,7 +112,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => __('api.logout_success')
+            'message' => __('api.logout_success'),
         ]);
     }
 }

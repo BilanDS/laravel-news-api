@@ -14,7 +14,7 @@ class NewsResource extends JsonResource
             'title' => $this->title,
             'short_description' => $this->short_description,
             'image' => $this->image
-                ? (str_starts_with($this->image, 'http') ? $this->image : asset('storage/' . $this->image))
+                ? (str_starts_with($this->image, 'http') ? $this->image : asset('storage/'.$this->image))
                 : null,
             'is_published' => $this->is_published,
             'published_at' => $this->created_at->format('Y-m-d H:i:s'),

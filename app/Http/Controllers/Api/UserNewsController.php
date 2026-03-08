@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNewsRequest;
+use App\Http\Requests\UpdateNewsRequest;
 use App\Http\Resources\NewsResource;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Http\Requests\UpdateNewsRequest;
 use OpenApi\Attributes as OA;
 
 class UserNewsController extends Controller
@@ -80,7 +80,7 @@ class UserNewsController extends Controller
                 'is_published' => $validated['is_published'] ?? false,
             ]);
 
-            if (!empty($validated['blocks'])) {
+            if (! empty($validated['blocks'])) {
                 foreach ($validated['blocks'] as $index => $blockData) {
                     $blockImagePath = null;
                     if (isset($blockData['image']) && $request->hasFile("blocks.{$index}.image")) {
@@ -95,10 +95,12 @@ class UserNewsController extends Controller
                     ]);
                 }
             }
+
             return $news;
         });
 
         $news->load(['author', 'blocks']);
+
         return new NewsResource($news);
     }
 
@@ -114,6 +116,7 @@ class UserNewsController extends Controller
     {
         Gate::authorize('view', $my_news);
         $my_news->load(['author', 'blocks']);
+
         return new NewsResource($my_news);
     }
 
@@ -184,6 +187,7 @@ class UserNewsController extends Controller
         });
 
         $my_news->load(['author', 'blocks']);
+
         return new NewsResource($my_news);
     }
 
@@ -210,6 +214,7 @@ class UserNewsController extends Controller
         }
 
         $my_news->delete();
+
         return response()->json(['message' => __('api.news_deleted')]);
     }
 }

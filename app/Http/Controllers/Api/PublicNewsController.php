@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\News;
 use App\Http\Resources\NewsResource;
+use App\Models\News;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use OpenApi\Attributes as OA;
@@ -74,7 +74,7 @@ class PublicNewsController extends Controller
     #[OA\Response(response: 404, description: 'Новину не знайдено або вона ще не опублікована')]
     public function show(News $news): NewsResource
     {
-        if (!$news->is_published) {
+        if (! $news->is_published) {
             abort(404, __('api.news_hidden'));
         }
 

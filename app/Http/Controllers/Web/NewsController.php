@@ -26,7 +26,7 @@ class NewsController extends Controller
 
     public function show(News $news)
     {
-        if (!$news->is_published) {
+        if (! $news->is_published) {
             if (\Illuminate\Support\Facades\Auth::id() !== $news->user_id) {
                 abort(404, __('api.news_not_found'));
             }

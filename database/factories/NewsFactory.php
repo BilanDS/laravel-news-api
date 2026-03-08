@@ -18,7 +18,7 @@ class NewsFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => fake()->realText(50),
-            'image' => 'https://picsum.photos/seed/' . fake()->uuid() . '/800/600',
+            'image' => 'https://picsum.photos/seed/'.fake()->uuid().'/800/600',
             'short_description' => fake()->realText(150),
             'is_published' => fake()->boolean(70),
         ];
@@ -26,14 +26,14 @@ class NewsFactory extends Factory
 
     public function published(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'is_published' => true,
         ]);
     }
 
     public function hidden(): static
     {
-        return $this->state(fn(array $attributes) => [
+        return $this->state(fn (array $attributes) => [
             'is_published' => false,
         ]);
     }

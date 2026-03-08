@@ -4,11 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
-
-use App\Http\Resources\UserResource;
 
 class ProfileController extends Controller
 {
@@ -34,7 +33,7 @@ class ProfileController extends Controller
                         new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
                         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
                     ]
-                )
+                ),
             ]
         )
     )]
@@ -42,10 +41,9 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         return response()->json([
-            'data' => new UserResource($request->user())
+            'data' => new UserResource($request->user()),
         ]);
     }
-
 
     #[OA\Put(
         path: '/api/profiles/me',
@@ -78,7 +76,7 @@ class ProfileController extends Controller
                         new OA\Property(property: 'name', type: 'string', example: 'Супер Адмін'),
                         new OA\Property(property: 'email', type: 'string', example: 'new_email@example.com'),
                     ]
-                )
+                ),
             ]
         )
     )]
@@ -98,7 +96,7 @@ class ProfileController extends Controller
             $user->email_verified_at = null;
         }
 
-        if (!empty($validated['password'])) {
+        if (! empty($validated['password'])) {
             $user->password = Hash::make($validated['password']);
         }
 
@@ -106,7 +104,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => __('api.profile_updated'),
-            'data' => new UserResource($user)
+            'data' => new UserResource($user),
         ]);
     }
 }

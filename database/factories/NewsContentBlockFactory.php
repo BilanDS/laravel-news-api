@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Enums\BlockType;
 use App\Models\News;
 use App\Models\NewsContentBlock;
-use App\Enums\BlockType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class NewsContentBlockFactory extends Factory
@@ -24,7 +24,7 @@ class NewsContentBlockFactory extends Factory
                 : null,
 
             'image_path' => in_array($type, [BlockType::Image, BlockType::TextImageRight, BlockType::TextImageLeft])
-                ? 'https://picsum.photos/seed/' . fake()->uuid() . '/640/480'
+                ? 'https://picsum.photos/seed/'.fake()->uuid().'/640/480'
                 : null,
 
             'order' => 0,
