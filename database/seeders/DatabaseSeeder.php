@@ -7,6 +7,7 @@ use App\Models\NewsContentBlock;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,6 +16,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        Storage::disk('public')->deleteDirectory('news');
+        Storage::disk('public')->deleteDirectory('news_blocks');
+
+        Storage::disk('public')->makeDirectory('news');
+        Storage::disk('public')->makeDirectory('news_blocks');
+
         $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

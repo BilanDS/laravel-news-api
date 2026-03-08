@@ -26,7 +26,7 @@ class NewsPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     // Користувач може редагувати тільки свою новину

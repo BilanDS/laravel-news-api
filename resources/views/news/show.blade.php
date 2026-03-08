@@ -1,67 +1,97 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="mb-3">
-        <a href="{{ route('home') }}" class="text-decoration-none">&larr; Назад до списку</a>
-    </div>
+    <div class="container mb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <nav class="mb-4">
+                    <a href="{{ route('dashboard') }}" class="btn btn-link ps-0 text-decoration-none text-secondary">
+                        Назад до панелі керування
+                    </a>
+                </nav>
 
-    <div class="card shadow-sm">
-        @if ($news->image)
-            <img src="{{ Str::startsWith($news->image, 'http') ? $news->image : asset('storage/' . $news->image) }}"
-                class="card-img-top" alt="{{ $news->title }}" style="max-height: 400px; object-fit: cover;">
-        @endif
+                <header class="mb-5">
+                    <h1 class="display-4 fw-bold mb-3">{{ $news->title }}</h1>
+                    <p class="lead text-muted mb-4">{{ $news->short_description }}</p>
 
-        <div class="card-body p-5">
-            <h1 class="mb-3">
-                {{ $news->title }}
-                @if (!$news->is_published)
-                    <span class="badge bg-secondary fs-6 align-middle ms-2">Чернетка</span>
+                    <div class="d-flex align-items-center text-muted small">
+                        <span class="me-3">{{ $news->created_at->format('d.m.Y H:i') }}</span>
+                        <span>Автор: {{ $news->author->name ?? 'Анонім' }}</span>
+                        @if (!$news->is_published)
+                            <span class="badge bg-warning text-dark ms-3">Чернетка</span>
+                        @endif
+                    </div>
+                </header>
+
+                @if ($news->image)
+                    <div class="mb-5 text-center">
+                        <img src="{{ asset('storage/' . $news->image) }}" class="img-fluid rounded-4 shadow-sm"
+                            style="max-height: 500px; width: 100%; object-fit: cover;" alt="{{ $news->title }}">
+                    </div>
                 @endif
-            </h1>
-            <div class="d-flex justify-content-between text-muted mb-4 border-bottom pb-3">
-                <span>Автор: <strong>{{ $news->author->name }}</strong></span>
-                <span>Опубліковано: {{ $news->created_at->format('d.m.Y H:i') }}</span>
-            </div>
 
-            <p class="lead mb-5">{{ $news->short_description }}</p>
+                <hr class="my-5 opacity-25">
 
-            @foreach ($news->blocks as $block)
-                <div class="content-block mb-4">
+                <article class="news-content">
+                    @forelse ($news->blocks as $block)
+                        <div class="mb-5">
+                            @switch($block->type->value)
+                                @case('text')
+                                    <div class="fs-5 lh-lg">
+                                        {!! nl2br(e($block->text_content)) !!}
+                                    </div>
+                                @break
 
-                    @if ($block->type === 'text')
-                        <div class="text-content">
-                            {!! nl2br(e($block->text_content)) !!}
-                        </div>
-                    @elseif($block->type === 'image')
-                        <div class="text-center my-4">
-                            <img src="{{ Str::startsWith($block->image_path, 'http') ? $block->image_path : asset('storage/' . $block->image_path) }}"
-                                class="block-image shadow-sm" alt="Зображення блоку">
-                        </div>
-                    @elseif($block->type === 'text_image_right')
-                        <div class="row align-items-center my-4">
-                            <div class="col-md-7">
-                                {!! nl2br(e($block->text_content)) !!}
-                            </div>
-                            <div class="col-md-5 text-center">
-                                <img src="{{ Str::startsWith($block->image_path, 'http') ? $block->image_path : asset('storage/' . $block->image_path) }}"
-                                    class="img-fluid rounded shadow-sm" alt="Зображення">
-                            </div>
-                        </div>
-                    @elseif($block->type === 'text_image_left')
-                        <div class="row align-items-center my-4">
-                            <div class="col-md-5 text-center order-2 order-md-1">
-                                <img src="{{ Str::startsWith($block->image_path, 'http') ? $block->image_path : asset('storage/' . $block->image_path) }}"
-                                    class="img-fluid rounded shadow-sm" alt="Зображення">
-                            </div>
-                            <div class="col-md-7 order-1 order-md-2 mb-3 mb-md-0">
-                                {!! nl2br(e($block->text_content)) !!}
-                            </div>
-                        </div>
-                    @endif
+                                @case('image')
+                                    @if ($block->image_path)
+                                        <div class="text-center">
+                                            <img src="{{ asset('storage/' . $block->image_path) }}"
+                                                class="img-fluid rounded-3 shadow-sm" alt="Зображення">
+                                        </div>
+                                    @endif
+                                @break
 
+                                @case('text_image_right')
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-7 fs-5 lh-lg">
+                                            {!! nl2br(e($block->text_content)) !!}
+                                        </div>
+                                        <div class="col-md-5">
+                                            @if ($block->image_path)
+                                                <img src="{{ asset('storage/' . $block->image_path) }}"
+                                                    class="img-fluid rounded-3 shadow-sm" alt="Зображення">
+                                            @endif
+                                        </div>
+                                    </div>
+                                @break
+
+                                @case('text_image_left')
+                                    <div class="row align-items-center g-4">
+                                        <div class="col-md-5 order-2 order-md-1">
+                                            @if ($block->image_path)
+                                                <img src="{{ asset('storage/' . $block->image_path) }}"
+                                                    class="img-fluid rounded-3 shadow-sm" alt="Зображення">
+                                            @endif
+                                        </div>
+                                        <div class="col-md-7 order-1 order-md-2 fs-5 lh-lg">
+                                            {!! nl2br(e($block->text_content)) !!}
+                                        </div>
+                                    </div>
+                                @break
+
+                                @default
+                                    <div class="alert alert-light border small text-muted">
+                                        Блок типу "{{ $block->type->value ?? 'unknown' }}" не підтримується.
+                                    </div>
+                            @endswitch
+                        </div>
+                        @empty
+                            <div class="text-center py-5">
+                                <p class="text-muted">Зміст новини відсутній.</p>
+                            </div>
+                        @endforelse
+                    </article>
                 </div>
-            @endforeach
-
+            </div>
         </div>
-    </div>
-@endsection
+    @endsection

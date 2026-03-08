@@ -2,13 +2,16 @@
 
 @section('content')
     <div class="row mb-4 align-items-center">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h1 class="h3 mb-0">Панель керування: Мої новини</h1>
             <p class="text-muted">Перегляд статусу ваших публікацій</p>
         </div>
-        <div class="col-md-4 text-md-end">
+        <div class="col-md-6 text-md-end">
+            <a href="{{ route('dashboard.news.create') }}" class="btn btn-primary shadow-sm me-2">
+                + Створити новину
+            </a>
             <a href="/api/documentation" target="_blank" class="btn btn-warning shadow-sm">
-                Керувати контентом через API
+                Керувати API
             </a>
         </div>
     </div>
@@ -30,7 +33,9 @@
                         @forelse($news as $item)
                             <tr>
                                 <td class="ps-4">
-                                    <strong>{{ $item->title }}</strong>
+                                    <a href="{{ route('news.show', $item) }}" class="text-decoration-none text-dark">
+                                        <strong>{{ $item->title }}</strong>
+                                    </a>
                                     <br>
                                     <small class="text-muted">{{ Str::limit($item->short_description, 50) }}</small>
                                 </td>
@@ -38,23 +43,42 @@
                                     @if ($item->is_published)
                                         <span class="badge bg-success">Опубліковано</span>
                                     @else
-                                        <span class="badge bg-secondary">Приховано (Чернетка)</span>
+                                        <span class="badge bg-secondary">Чернетка</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge bg-info text-dark">{{ $item->blocks_count }} блоків</span>
+                                    <span class="badge bg-info text-dark">
+                                        {{ $item->blocks_count ?? $item->blocks->count() }} блоків
+                                    </span>
                                 </td>
                                 <td>{{ $item->created_at->format('d.m.Y H:i') }}</td>
                                 <td class="text-end pe-4">
-                                    <a href="{{ url('/news/' . $item->id) }}" class="btn btn-sm btn-outline-primary">
-                                        Переглянути
-                                    </a>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('news.show', $item) }}" class="btn btn-sm btn-outline-info">
+                                            Переглянути
+                                        </a>
+
+                                        <a href="{{ route('dashboard.news.edit', $item) }}"
+                                            class="btn btn-sm btn-outline-primary" title="Редагувати">
+                                            Редагувати
+                                        </a>
+
+                                        <form action="{{ route('dashboard.news.destroy', $item) }}" method="POST"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Ви впевнені, що хочете видалити цю новину?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Видалити">
+                                                Видалити
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         @empty
                             <tr>
                                 <td colspan="5" class="text-center py-4 text-muted">
-                                    Ви ще не створили жодної новини. Зробіть це через API!
+                                    Ви ще не створили жодної новини.
                                 </td>
                             </tr>
                         @endforelse
