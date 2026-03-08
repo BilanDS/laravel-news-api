@@ -17,7 +17,7 @@ use OpenApi\Attributes as OA;
 class UserNewsController extends Controller
 {
     #[OA\Get(
-        path: '/api/my-news',
+        path: '/api/users/me/news',
         summary: 'Отримати список власних новин',
         description: 'Повертає пагінований список усіх новин (включаючи чернетки), створених поточним користувачем.',
         security: [['bearerAuth' => []]],
@@ -36,7 +36,7 @@ class UserNewsController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/my-news',
+        path: '/api/users/me/news',
         summary: 'Створити нову новину',
         description: 'Створення новини з мультимедійними блоками через multipart/form-data.',
         security: [['bearerAuth' => []]],
@@ -103,7 +103,7 @@ class UserNewsController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/my-news/{id}',
+        path: '/api/users/me/news/{id}',
         summary: 'Переглянути свою новину',
         security: [['bearerAuth' => []]],
         tags: ['My News']
@@ -118,7 +118,7 @@ class UserNewsController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/my-news/{id}',
+        path: '/api/users/me/news/{id}',
         summary: 'Оновити існуючу новину',
         description: 'Для оновлення з файлами використовуйте POST та поле _method=PUT.',
         security: [['bearerAuth' => []]],
@@ -188,7 +188,7 @@ class UserNewsController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/my-news/{id}',
+        path: '/api/users/me/news/{id}',
         summary: 'Видалити новину',
         security: [['bearerAuth' => []]],
         tags: ['My News']

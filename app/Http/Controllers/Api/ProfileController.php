@@ -13,7 +13,7 @@ use App\Http\Resources\UserResource;
 class ProfileController extends Controller
 {
     #[OA\Get(
-        path: '/api/profile',
+        path: '/api/profiles/me',
         summary: 'Отримати дані свого профілю',
         security: [['bearerAuth' => []]],
         tags: ['Profile']
@@ -48,7 +48,7 @@ class ProfileController extends Controller
 
 
     #[OA\Put(
-        path: '/api/profile',
+        path: '/api/profiles/me',
         summary: 'Оновити дані профілю',
         security: [['bearerAuth' => []]],
         tags: ['Profile']
