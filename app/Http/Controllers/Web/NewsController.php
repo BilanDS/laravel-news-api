@@ -44,21 +44,4 @@ class NewsController extends Controller
 
         return view('news.show', compact('news'));
     }
-
-    /**
-     * Display the user's dashboard with their news.
-     */
-    public function dashboard()
-    {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
-        $news = $user->news()
-            ->with(['author'])
-            ->withCount('blocks')
-            ->latest()
-            ->paginate(10);
-
-        return view('news.dashboard', compact('news'));
-    }
 }

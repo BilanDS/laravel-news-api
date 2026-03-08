@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\News;
 
 use App\Enums\BlockType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNewsRequest extends FormRequest
+class StoreRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,14 +16,16 @@ class UpdateNewsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['sometimes', 'required', 'string', 'max:255'],
-            'short_description' => ['sometimes', 'required', 'string'],
+            'title' => ['required', 'string', 'max:255'],
+            'short_description' => ['required', 'string'],
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'is_published' => ['boolean'],
 
             'blocks' => ['nullable', 'array'],
+
             'blocks.*.type' => ['required', Rule::enum(BlockType::class)],
             'blocks.*.text_content' => ['nullable', 'string'],
+
             'blocks.*.image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
         ];
     }

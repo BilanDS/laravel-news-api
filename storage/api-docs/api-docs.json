@@ -141,6 +141,206 @@
                 ]
             }
         },
+        "/api/dashboard/news": {
+            "get": {
+                "tags": [
+                    "Dashboard News"
+                ],
+                "summary": "Отримати список власних новин",
+                "description": "Повертає пагінований список усіх новин (включаючи чернетки), створених поточним користувачем.",
+                "operationId": "ed4f5ed039696876d2c3fc6174d6f4d9",
+                "responses": {
+                    "200": {
+                        "description": "Успішно"
+                    },
+                    "401": {
+                        "description": "Неавторизовано"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard News"
+                ],
+                "summary": "Створити нову новину",
+                "description": "Створення новини з мультимедійними блоками через multipart/form-data.",
+                "operationId": "c870324eed82fa0db187861915dbe894",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "short_description",
+                                    "is_published"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Нова новина"
+                                    },
+                                    "short_description": {
+                                        "type": "string",
+                                        "example": "Короткий опис"
+                                    },
+                                    "is_published": {
+                                        "type": "boolean",
+                                        "example": 1
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "blocks[0][type]": {
+                                        "type": "string",
+                                        "example": "text"
+                                    },
+                                    "blocks[0][text_content]": {
+                                        "type": "string",
+                                        "example": "Зміст блоку"
+                                    },
+                                    "blocks[1][type]": {
+                                        "type": "string",
+                                        "example": "image"
+                                    },
+                                    "blocks[1][image]": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Створено"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/dashboard/news/{id}": {
+            "get": {
+                "tags": [
+                    "Dashboard News"
+                ],
+                "summary": "Переглянути свою новину",
+                "operationId": "06891224aa1afa44505c930db9a2c612",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успішно"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Dashboard News"
+                ],
+                "summary": "Оновити існуючу новину",
+                "description": "Для оновлення з файлами використовуйте POST та поле _method=PUT.",
+                "operationId": "a80920aec4ffcb075ed19da743f40df3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "_method": {
+                                        "type": "string",
+                                        "example": "PUT"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "blocks[0][type]": {
+                                        "type": "string",
+                                        "example": "text"
+                                    },
+                                    "blocks[0][text_content]": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Оновлено"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Dashboard News"
+                ],
+                "summary": "Видалити новину",
+                "operationId": "5746da9b0521eb953f2cb0acd2585a22",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Видалено"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/profiles/me": {
             "get": {
                 "tags": [
@@ -344,206 +544,6 @@
                     }
                 }
             }
-        },
-        "/api/users/me/news": {
-            "get": {
-                "tags": [
-                    "My News"
-                ],
-                "summary": "Отримати список власних новин",
-                "description": "Повертає пагінований список усіх новин (включаючи чернетки), створених поточним користувачем.",
-                "operationId": "3802fca5b928d1b280fa6278354709ab",
-                "responses": {
-                    "200": {
-                        "description": "Успішно"
-                    },
-                    "401": {
-                        "description": "Неавторизовано"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "My News"
-                ],
-                "summary": "Створити нову новину",
-                "description": "Створення новини з мультимедійними блоками через multipart/form-data.",
-                "operationId": "16e1cbc6f3f1b30ae26c8bdf071ad18f",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "title",
-                                    "short_description",
-                                    "is_published"
-                                ],
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "example": "Нова новина"
-                                    },
-                                    "short_description": {
-                                        "type": "string",
-                                        "example": "Короткий опис"
-                                    },
-                                    "is_published": {
-                                        "type": "boolean",
-                                        "example": 1
-                                    },
-                                    "image": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    },
-                                    "blocks[0][type]": {
-                                        "type": "string",
-                                        "example": "text"
-                                    },
-                                    "blocks[0][text_content]": {
-                                        "type": "string",
-                                        "example": "Зміст блоку"
-                                    },
-                                    "blocks[1][type]": {
-                                        "type": "string",
-                                        "example": "image"
-                                    },
-                                    "blocks[1][image]": {
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Створено"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/api/users/me/news/{id}": {
-            "get": {
-                "tags": [
-                    "My News"
-                ],
-                "summary": "Переглянути свою новину",
-                "operationId": "35c7676c4f4a4d4f9a3fcad8383faeae",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Успішно"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "My News"
-                ],
-                "summary": "Оновити існуючу новину",
-                "description": "Для оновлення з файлами використовуйте POST та поле _method=PUT.",
-                "operationId": "6db270b14435cfd7259b3f2594b3a7f9",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "properties": {
-                                    "_method": {
-                                        "type": "string",
-                                        "example": "PUT"
-                                    },
-                                    "title": {
-                                        "type": "string"
-                                    },
-                                    "blocks[0][type]": {
-                                        "type": "string",
-                                        "example": "text"
-                                    },
-                                    "blocks[0][text_content]": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Оновлено"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "My News"
-                ],
-                "summary": "Видалити новину",
-                "operationId": "f6eb3bdb2a36946742924834bbae6281",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Видалено"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
@@ -562,16 +562,16 @@
             "description": "Auth"
         },
         {
+            "name": "Dashboard News",
+            "description": "Dashboard News"
+        },
+        {
             "name": "Profile",
             "description": "Profile"
         },
         {
             "name": "Public News",
             "description": "Public News"
-        },
-        {
-            "name": "My News",
-            "description": "My News"
         }
     ]
 }

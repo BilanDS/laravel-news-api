@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Web\NewsController;
+use App\Http\Controllers\Dashboard\NewsController as DashboardNewsController;
+use App\Http\Controllers\Web\NewsController as WebNewsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [NewsController::class, 'index'])->name('home');
-Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
+Route::get('/', [WebNewsController::class, 'index'])->name('home');
+Route::get('/news/{news}', [WebNewsController::class, 'show'])->name('news.show');
 
 Route::get('/login', function () {
     return view('auth.login');
@@ -36,7 +37,7 @@ Route::post('/logout-web', function (Request $request) {
 })->name('logout.web');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', [NewsController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard', [DashboardNewsController::class, 'index'])->name('dashboard');
 });
 
 require __DIR__.'/auth.php';

@@ -39,7 +39,7 @@ class PublicNewsController extends Controller
     {
         $news = News::query()
             ->where('is_published', true)
-            ->with(['author', 'blocks'])
+            ->with(['author', 'blocks' => fn ($q) => $q->orderBy('order')])
 
             ->when($request->search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -78,7 +78,7 @@ class PublicNewsController extends Controller
             abort(404, __('api.news_hidden'));
         }
 
-        $news->load(['author', 'blocks']);
+        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
 
         return new NewsResource($news);
     }

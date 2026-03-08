@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreNewsRequest;
-use App\Http\Requests\UpdateNewsRequest;
+use App\Http\Requests\News\StoreRequest;
+use App\Http\Requests\News\UpdateRequest;
 use App\Http\Resources\NewsResource;
 use App\Models\News;
 use Illuminate\Http\Request;
@@ -14,21 +14,21 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use OpenApi\Attributes as OA;
 
-class UserNewsController extends Controller
+class NewsController extends Controller
 {
     #[OA\Get(
-        path: '/api/users/me/news',
+        path: '/api/dashboard/news',
         summary: 'Отримати список власних новин',
         description: 'Повертає пагінований список усіх новин (включаючи чернетки), створених поточним користувачем.',
         security: [['bearerAuth' => []]],
-        tags: ['My News']
+        tags: ['Dashboard News']
     )]
     #[OA\Response(response: 200, description: 'Успішно')]
     #[OA\Response(response: 401, description: 'Неавторизовано')]
     public function index(Request $request): AnonymousResourceCollection
     {
         $news = $request->user()->news()
-            ->with(['author', 'blocks'])
+            ->with(['author', 'blocks' => fn ($q) => $q->orderBy('order')])
             ->latest()
             ->paginate(10);
 
@@ -36,11 +36,11 @@ class UserNewsController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/users/me/news',
+        path: '/api/dashboard/news',
         summary: 'Створити нову новину',
         description: 'Створення новини з мультимедійними блоками через multipart/form-data.',
         security: [['bearerAuth' => []]],
-        tags: ['My News']
+        tags: ['Dashboard News']
     )]
     #[OA\RequestBody(
         required: true,
@@ -62,7 +62,7 @@ class UserNewsController extends Controller
         )
     )]
     #[OA\Response(response: 201, description: 'Створено')]
-    public function store(StoreNewsRequest $request): NewsResource
+    public function store(StoreRequest $request): NewsResource
     {
         $validated = $request->validated();
         $user = $request->user();
@@ -99,33 +99,33 @@ class UserNewsController extends Controller
             return $news;
         });
 
-        $news->load(['author', 'blocks']);
+        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
 
         return new NewsResource($news);
     }
 
     #[OA\Get(
-        path: '/api/users/me/news/{id}',
+        path: '/api/dashboard/news/{id}',
         summary: 'Переглянути свою новину',
         security: [['bearerAuth' => []]],
-        tags: ['My News']
+        tags: ['Dashboard News']
     )]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(response: 200, description: 'Успішно')]
-    public function show(News $my_news): NewsResource
+    public function show(News $news): NewsResource
     {
-        Gate::authorize('view', $my_news);
-        $my_news->load(['author', 'blocks']);
+        Gate::authorize('view', $news);
+        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
 
-        return new NewsResource($my_news);
+        return new NewsResource($news);
     }
 
     #[OA\Post(
-        path: '/api/users/me/news/{id}',
+        path: '/api/dashboard/news/{id}',
         summary: 'Оновити існуючу новину',
         description: 'Для оновлення з файлами використовуйте POST та поле _method=PUT.',
         security: [['bearerAuth' => []]],
-        tags: ['My News']
+        tags: ['Dashboard News']
     )]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\RequestBody(
@@ -143,32 +143,32 @@ class UserNewsController extends Controller
         )
     )]
     #[OA\Response(response: 200, description: 'Оновлено')]
-    public function update(UpdateNewsRequest $request, News $my_news): NewsResource
+    public function update(UpdateRequest $request, News $news): NewsResource
     {
-        Gate::authorize('update', $my_news);
+        Gate::authorize('update', $news);
         $validated = $request->validated();
 
-        DB::transaction(function () use ($validated, $request, $my_news) {
+        DB::transaction(function () use ($validated, $request, $news) {
             if ($request->hasFile('image')) {
-                if ($my_news->image) {
-                    Storage::disk('public')->delete($my_news->image);
+                if ($news->image) {
+                    Storage::disk('public')->delete($news->image);
                 }
-                $my_news->image = $request->file('image')->store('news', 'public');
+                $news->image = $request->file('image')->store('news', 'public');
             }
 
-            $my_news->update([
-                'title' => $validated['title'] ?? $my_news->title,
-                'short_description' => $validated['short_description'] ?? $my_news->short_description,
-                'is_published' => $validated['is_published'] ?? $my_news->is_published,
+            $news->update([
+                'title' => $validated['title'] ?? $news->title,
+                'short_description' => $validated['short_description'] ?? $news->short_description,
+                'is_published' => $validated['is_published'] ?? $news->is_published,
             ]);
 
             if ($request->has('blocks')) {
-                foreach ($my_news->blocks as $block) {
+                foreach ($news->blocks as $block) {
                     if ($block->image_path) {
                         Storage::disk('public')->delete($block->image_path);
                     }
                 }
-                $my_news->blocks()->delete();
+                $news->blocks()->delete();
 
                 foreach ($validated['blocks'] as $index => $blockData) {
                     $blockImagePath = null;
@@ -176,7 +176,7 @@ class UserNewsController extends Controller
                         $blockImagePath = $request->file("blocks.{$index}.image")->store('news_blocks', 'public');
                     }
 
-                    $my_news->blocks()->create([
+                    $news->blocks()->create([
                         'type' => $blockData['type'],
                         'text_content' => $blockData['text_content'] ?? null,
                         'image_path' => $blockImagePath,
@@ -186,34 +186,34 @@ class UserNewsController extends Controller
             }
         });
 
-        $my_news->load(['author', 'blocks']);
+        $news->load(['author', 'blocks' => fn ($q) => $q->orderBy('order')]);
 
-        return new NewsResource($my_news);
+        return new NewsResource($news);
     }
 
     #[OA\Delete(
-        path: '/api/users/me/news/{id}',
+        path: '/api/dashboard/news/{id}',
         summary: 'Видалити новину',
         security: [['bearerAuth' => []]],
-        tags: ['My News']
+        tags: ['Dashboard News']
     )]
     #[OA\Parameter(name: 'id', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
     #[OA\Response(response: 200, description: 'Видалено')]
-    public function destroy(News $my_news)
+    public function destroy(News $news)
     {
-        Gate::authorize('delete', $my_news);
+        Gate::authorize('delete', $news);
 
-        if ($my_news->image) {
-            Storage::disk('public')->delete($my_news->image);
+        if ($news->image) {
+            Storage::disk('public')->delete($news->image);
         }
 
-        foreach ($my_news->blocks as $block) {
+        foreach ($news->blocks as $block) {
             if ($block->image_path) {
                 Storage::disk('public')->delete($block->image_path);
             }
         }
 
-        $my_news->delete();
+        $news->delete();
 
         return response()->json(['message' => __('api.news_deleted')]);
     }
