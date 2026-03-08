@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use OpenApi\Attributes as OA;
 
+use App\Http\Resources\UserResource;
+
 class ProfileController extends Controller
 {
     #[OA\Get(
@@ -40,7 +42,7 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         return response()->json([
-            'data' => $request->user()
+            'data' => new UserResource($request->user())
         ]);
     }
 
@@ -104,7 +106,7 @@ class ProfileController extends Controller
 
         return response()->json([
             'message' => 'Профіль успішно оновлено',
-            'data' => $user
+            'data' => new UserResource($user)
         ]);
     }
 }
