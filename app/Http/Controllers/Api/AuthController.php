@@ -47,7 +47,7 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Успішна реєстрація',
+            'message' => __('api.register_success'),
             'user' => new UserResource($user),
             'token' => $token
         ], 201);
@@ -95,7 +95,7 @@ class AuthController extends Controller
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Успішний вхід',
+            'message' => __('api.login_success'),
             'user' => new UserResource($user),
             'token' => $token
         ]);
@@ -113,7 +113,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Успішний вихід'
+            'message' => __('api.logout_success')
         ]);
     }
 }

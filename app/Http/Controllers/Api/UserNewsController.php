@@ -210,6 +210,6 @@ class UserNewsController extends Controller
         }
 
         $my_news->delete();
-        return response()->json(['message' => 'Новину успішно видалено']);
+        return response()->json(['message' => __('api.news_deleted')]);
     }
 }

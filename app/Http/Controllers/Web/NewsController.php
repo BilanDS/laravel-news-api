@@ -28,7 +28,7 @@ class NewsController extends Controller
     {
         if (!$news->is_published) {
             if (\Illuminate\Support\Facades\Auth::id() !== $news->user_id) {
-                abort(404, 'Новину не знайдено');
+                abort(404, __('api.news_not_found'));
             }
         }
 

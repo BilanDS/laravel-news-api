@@ -75,7 +75,7 @@ class PublicNewsController extends Controller
     public function show(News $news): NewsResource
     {
         if (!$news->is_published) {
-            abort(404, 'Новину не знайдено або вона прихована.');
+            abort(404, __('api.news_hidden'));
         }
 
         $news->load(['author', 'blocks']);

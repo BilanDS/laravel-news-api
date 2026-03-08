@@ -105,7 +105,7 @@ class ProfileController extends Controller
         $user->save();
 
         return response()->json([
-            'message' => 'Профіль успішно оновлено',
+            'message' => __('api.profile_updated'),
             'data' => new UserResource($user)
         ]);
     }
